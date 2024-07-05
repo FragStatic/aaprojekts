@@ -25,6 +25,42 @@ function Table(data: TableData[]) {
   const [editableData, setEditableData] = useState(data);
   const [editing, setEditing] = useState({ row: 0, column: "" });
   const [newRowData, setNewRowData] = useState(initialRowData);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const filteredData = editableData.filter((data: TableData) =>
+    Object.values(data).some((value) =>
+      String(value).toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  const indexOfLastItem = pageNumber * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleChangeItemsPerPage = (e: any) => {
+    setItemsPerPage(e.target.value);
+  };
+
+  function isLastPage() {
+    console.log(Math.ceil(filteredData.length / itemsPerPage));
+    if (pageNumber === Math.ceil(filteredData.length / itemsPerPage)) {
+      return true;
+    }
+    return false;
+  }
+
+  const handlePageNumberAdd = (pageNumber: number) => {
+    if (!isLastPage()) {
+      setPageNumber(pageNumber);
+    }
+  };
+
+  const handlePageNumberSubtract = (pageNumber: number) => {
+    if (!(pageNumber < 1)) {
+      setPageNumber(pageNumber);
+    }
+  };
 
   const handleNewRowDataChange = (dataType: string, data: string) => {
     setNewRowData({ ...newRowData, [dataType]: data });
@@ -37,15 +73,9 @@ function Table(data: TableData[]) {
     setNewRowData(initialRowData);
   };
 
-  const handleSearch = (event: any) => {
-    setSearchTerm(event.target.value);
+  const handleSearch = (e: any) => {
+    setSearchTerm(e.target.value);
   };
-
-  const filteredData = editableData.filter((data: TableData) =>
-    Object.values(data).some((value) =>
-      String(value).toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  );
 
   const handleRemoveRow = (rowkey: number) => {
     const updatedData = editableData.filter(
@@ -60,7 +90,7 @@ function Table(data: TableData[]) {
   };
 
   const handleChange = (rowIndex: number, columnKey: string, value: string) => {
-    const updatedData = editableData.map((data: any, index: number) =>
+    const updatedData = editableData.map((data: TableData, index: number) =>
       index === rowIndex ? { ...data, [columnKey]: value } : data
     );
     setEditableData(updatedData);
@@ -119,6 +149,16 @@ function Table(data: TableData[]) {
           <button onClick={() => handleNewRowSubmit()}>Add row</button>
         </div>
       </div>
+      <div>
+        <button onClick={() => handlePageNumberSubtract(pageNumber - 1)}>
+          {"<"}
+        </button>
+        <span>{pageNumber}</span>
+        <button onClick={() => handlePageNumberAdd(pageNumber + 1)}>
+          {">"}
+        </button>
+        <input value={itemsPerPage} onChange={handleChangeItemsPerPage} />
+      </div>
       <table>
         <thead>
           <tr>
@@ -130,7 +170,7 @@ function Table(data: TableData[]) {
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((data: TableData, rowKey: number) => (
+          {currentItems.map((data: TableData, rowKey: number) => (
             <tr key={rowKey}>
               {Object.entries(data).map(([key, value]) => (
                 <td key={key} onClick={() => handleEdit(rowKey, key)}>
