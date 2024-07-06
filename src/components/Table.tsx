@@ -19,8 +19,7 @@ const initialRowData = {
 };
 
 function Table(data: TableData[]) {
-  const { setStorage, getStorage, editTableRow, addNewRow, removeRow } =
-    useStorage("data");
+  const { editTableRow, addNewRow, removeRow } = useStorage("data");
   const [searchTerm, setSearchTerm] = useState("");
   const [editableData, setEditableData] = useState(data);
   const [editing, setEditing] = useState({ row: 0, column: "" });
@@ -43,7 +42,6 @@ function Table(data: TableData[]) {
   };
 
   function isLastPage() {
-    console.log(Math.ceil(filteredData.length / itemsPerPage));
     if (pageNumber === Math.ceil(filteredData.length / itemsPerPage)) {
       return true;
     }
@@ -64,17 +62,21 @@ function Table(data: TableData[]) {
 
   const handleNewRowDataChange = (dataType: string, data: string) => {
     setNewRowData({ ...newRowData, [dataType]: data });
-    console.log(newRowData);
   };
 
   const handleNewRowSubmit = () => {
-    setEditableData([...editableData, newRowData]);
-    addNewRow(newRowData);
-    setNewRowData(initialRowData);
+    if (Object.values(newRowData).some((value) => value === "")) {
+      alert("Lauks nav aizpildits");
+    } else {
+      setEditableData([...editableData, newRowData]);
+      addNewRow(newRowData);
+      setNewRowData(initialRowData);
+    }
   };
 
   const handleSearch = (e: any) => {
     setSearchTerm(e.target.value);
+    setPageNumber(1);
   };
 
   const handleRemoveRow = (rowkey: number) => {
@@ -173,13 +175,21 @@ function Table(data: TableData[]) {
           {currentItems.map((data: TableData, rowKey: number) => (
             <tr key={rowKey}>
               {Object.entries(data).map(([key, value]) => (
-                <td key={key} onClick={() => handleEdit(rowKey, key)}>
-                  {editing.row === rowKey && editing.column === key ? (
+                <td
+                  key={key}
+                  onClick={() => handleEdit(indexOfFirstItem + rowKey, key)}
+                >
+                  {editing.row === indexOfFirstItem + rowKey &&
+                  editing.column === key ? (
                     <input
                       type="text"
                       value={value}
                       onChange={(e) =>
-                        handleChange(rowKey, key, e.target.value)
+                        handleChange(
+                          indexOfFirstItem + rowKey,
+                          key,
+                          e.target.value
+                        )
                       }
                       onBlur={handleBlur}
                     />
@@ -189,7 +199,11 @@ function Table(data: TableData[]) {
                 </td>
               ))}
               <td>
-                <button onClick={() => handleRemoveRow(rowKey)}>DELETE</button>
+                <button
+                  onClick={() => handleRemoveRow(indexOfFirstItem + rowKey)}
+                >
+                  DELETE
+                </button>
               </td>
             </tr>
           ))}
