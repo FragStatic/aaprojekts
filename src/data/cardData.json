@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Skola",
+    "description": "Pabeidzu Rīgas Valsts tehnikumu, kur apguvu pamatus par programmēšanas pamatprincipiem. Galvenokārt mācību tēmas bija saistītas ar PHP, JavaScript, C++, Python un MySQL. Kā arī pamatprincipi par OS un algoritmiem."
+  },
+  {
+    "title": "Prakse",
+    "description": "Pirmā prakse bija saistīta ar mācību elektro iekārtu uzstādīšanu un testēšanu. Otrajā praksē biju uzņēmumā, kur nākotnē arī turpināju strādāt. Šajā laikā es galvenokārt ieguvu pirmo pieredzi darbā kā programmētājam un dziļāk iepazinu MySQL, Git un PHP."
+  },
+  {
+    "title": "Projekti",
+    "description": "Galvenokārt esmu veidojis front-end priekš pašapkalpošanās kioskiem sadarbojoties gan ar UI/UX dizaineri, gan arī back-end programmētāju. Pārsvarā veidoju aplikācijas priekš medicīnas nozares, lielākoties izmantojot ReactJS, WebSockets, Redux un Tailwind, kur arī tika pielietots ārējais API."
+  },
+  {
+    "title": "Nākotne",
+    "description": "Priekš savas karjeras izaugmes ir vēlmes arī iespert kāju back-end izstrādē, tādejādi pārtopot par Full-stack programmētāju. Kā arī vilina AI tehnoloģijas, redzot kā attīstās tehnoloģijas nozare."
+  }
+]
