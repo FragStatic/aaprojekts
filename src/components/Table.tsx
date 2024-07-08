@@ -1,6 +1,8 @@
 import { useState } from "react";
 import useStorage from "./Storage";
 import { TableData } from "./Storage";
+import deleteSvg from "../images/delete.svg";
+import plusSvg from "../images/plus.svg";
 
 enum ObjectDataKeys {
   FIRST_NAME = "first_name",
@@ -17,6 +19,8 @@ const initialRowData = {
   race: "",
   ip_address: "",
 };
+
+const TableHeaders = ["Vārds", "Uzvārds", "E-pasts", "Rase", "IP adrese"];
 
 function Table(data: TableData[]) {
   const { editTableRow, addNewRow, removeRow } = useStorage("data");
@@ -66,7 +70,7 @@ function Table(data: TableData[]) {
 
   const handleNewRowSubmit = () => {
     if (Object.values(newRowData).some((value) => value === "")) {
-      alert("Lauks nav aizpildits");
+      alert("Visi lauki nav aizpildīti");
     } else {
       setEditableData([...editableData, newRowData]);
       addNewRow(newRowData);
@@ -105,70 +109,75 @@ function Table(data: TableData[]) {
 
   return (
     <div>
-      <div>
+      <div className="inline-flex justify-between w-full">
         <input
+          className="border border-primary bg-secondary h-8 w-40 p-4 text-xl rounded-md self-end"
           type="text"
-          placeholder="Search..."
+          placeholder="Meklēt..."
           value={searchTerm}
           onChange={handleSearch}
         />
         <div>
           <input
+            className="border border-primary bg-secondary h-8 w-40 mr-2 p-4 text-xl rounded-md"
             value={newRowData.first_name}
             onChange={(e) =>
               handleNewRowDataChange(ObjectDataKeys.FIRST_NAME, e.target.value)
             }
-            placeholder="First Name"
+            placeholder="Vārds"
           />
           <input
+            className="border border-primary bg-secondary h-8 w-40 mr-2 p-4 text-xl rounded-md"
             value={newRowData.last_name}
             onChange={(e) =>
               handleNewRowDataChange(ObjectDataKeys.LAST_NAME, e.target.value)
             }
-            placeholder="Last Name"
+            placeholder="Uzvārds"
           ></input>
           <input
+            className="border border-primary bg-secondary h-8 w-40 mr-2 p-4 text-xl rounded-md"
             value={newRowData.email}
             onChange={(e) =>
               handleNewRowDataChange(ObjectDataKeys.EMAIL, e.target.value)
             }
-            placeholder="E-mail"
+            placeholder="E-pasts"
           />
           <input
+            className="border border-primary bg-secondary h-8 w-40 mr-2 p-4 text-xl rounded-md"
             value={newRowData.race}
             onChange={(e) =>
               handleNewRowDataChange(ObjectDataKeys.RACE, e.target.value)
             }
-            placeholder="Race"
+            placeholder="Rase"
           />
           <input
+            className="border border-primary bg-secondary h-8 w-40 mr-2 p-4 text-xl rounded-md"
             value={newRowData.ip_address}
             onChange={(e) =>
               handleNewRowDataChange(ObjectDataKeys.IP_ADDRESS, e.target.value)
             }
-            placeholder="IP address"
+            placeholder="IP adrese"
           />
-          <button onClick={() => handleNewRowSubmit()}>Add row</button>
+          <button
+            className="inline-flex mt-1 p-4 mr-8 items-center bg-green h-8 w-30 mr-2 text-2xl text-white rounded-md self-end"
+            onClick={() => handleNewRowSubmit()}
+          >
+            <span>Pievienot</span>
+            <img className="w-6 ml-4" alt="Add" src={plusSvg} />
+          </button>
         </div>
       </div>
-      <div>
-        <button onClick={() => handlePageNumberSubtract(pageNumber - 1)}>
-          {"<"}
-        </button>
-        <span>{pageNumber}</span>
-        <button onClick={() => handlePageNumberAdd(pageNumber + 1)}>
-          {">"}
-        </button>
-        <input value={itemsPerPage} onChange={handleChangeItemsPerPage} />
-      </div>
-      <table>
+      <table className="mt-2">
         <thead>
           <tr>
-            <th className="w-80 text-start">First Name</th>
-            <th className="w-80 text-start">Last Name</th>
-            <th className="w-80 text-start">E-mail</th>
-            <th className="w-80 text-start">Race</th>
-            <th className="w-80 text-start">IP address</th>
+            {TableHeaders.map((header: string, key: number) => (
+              <th
+                key={key}
+                className="w-80 text-start bg-primary text-white border-grey border-b"
+              >
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -178,6 +187,7 @@ function Table(data: TableData[]) {
                 <td
                   key={key}
                   onClick={() => handleEdit(indexOfFirstItem + rowKey, key)}
+                  className="bg-secondary border-grey border-b"
                 >
                   {editing.row === indexOfFirstItem + rowKey &&
                   editing.column === key ? (
@@ -198,17 +208,33 @@ function Table(data: TableData[]) {
                   )}
                 </td>
               ))}
-              <td>
-                <button
+              <td className="w-8">
+                <img
+                  alt="Delete"
+                  src={deleteSvg}
                   onClick={() => handleRemoveRow(indexOfFirstItem + rowKey)}
-                >
-                  DELETE
-                </button>
+                />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div className="flex w-full justify-center mt-4">
+        <div className="text-xl">
+          <button onClick={() => handlePageNumberSubtract(pageNumber - 1)}>
+            {"<"}
+          </button>
+          <span className="mx-4 underline">{pageNumber}</span>
+          <button onClick={() => handlePageNumberAdd(pageNumber + 1)}>
+            {">"}
+          </button>
+        </div>
+        <input
+          className="border border-primary bg-secondary h-6 w-8 ml-4 p-2 text-md rounded-md"
+          value={itemsPerPage}
+          onChange={handleChangeItemsPerPage}
+        />
+      </div>
     </div>
   );
 }
